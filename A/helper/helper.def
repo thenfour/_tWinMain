@@ -1,0 +1,17 @@
+LIBRARY	helper
+EXPORTS
+    LoadDll
+    UnloadDll
+    MsgSet
+    Msg
+    MsgNfo
+    MsgClr
+    MsgChange
+    MsgQuery
+    MsgRevive
+    Alias
+    AliasNfo
+    AliasList
+    DbAssimilate
+    DbPopulateEntities
+	Upload
