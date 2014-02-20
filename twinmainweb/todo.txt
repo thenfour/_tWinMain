@@ -1,0 +1,2 @@
+- messages that have never been used
+- counts (number of users, number of transactions, etc)

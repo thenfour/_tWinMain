@@ -1,0 +1,1 @@
+<%@ Page language="c#" Codebehind="HelloWorld.aspx.cs" AutoEventWireup="false" Inherits="Xmlx.HelloWorld" %>

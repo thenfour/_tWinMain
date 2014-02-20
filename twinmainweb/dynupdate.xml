@@ -1,0 +1,7 @@
+<Mashboxx>
+  <Configuration
+    ConfigURL = "http://tenfour.ath.cx:85/dynupdate.xml"
+    PackageURL = "http://tenfour.ath.cx:85/setup.exe"
+    LatestVersion = "4"
+  />
+</Mashboxx>

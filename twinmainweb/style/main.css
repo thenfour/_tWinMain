@@ -1,0 +1,71 @@
+
+body, table, td
+{
+    background-color: #ffffff;
+    color:            #00008B;
+
+    font-family: verdana; 
+    font-size: 10pt;
+    border : 0px;
+    margin : 0 0 0 0;
+}
+
+font.Alias
+{
+    color:            #7B004B;
+    font-family: Arial; 
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+font.Message
+{
+    color:            #00008B;
+    font-family: verdana; 
+    font-size: 10pt;
+}
+
+font.ListCaption
+{
+    color:            #006B8B;
+    font-family: verdana; 
+    font-size: 10pt;
+    font-style: italic;
+}
+
+th, Caption
+{
+    background-color: Navy;
+    color: #cfcfcf;
+    font-weight: bold;
+    font-family: verdana; 
+    font-size: 10pt;
+    text-align: left;
+}
+
+img.line
+{
+    height: 2px;
+    width: 100%;
+    background-image : url(red2.gif);
+}
+
+h1           { font-family: Arial; font-size: 18pt; color: #190F3F; font-weight: bold }
+h2           { font-family: Arial; font-size: 16pt; color: #190F3F; font-weight: bold }
+h3           { font-family: Arial; font-size: 14pt; color: #190F3F; font-weight: bold }
+h4           { font-family: Arial; font-size: 12pt; color: #190F3F; font-weight: bold }
+
+pre
+{
+    background:#E0E0E0;
+    color: #000000;
+    padding-top: 2 px;
+    padding-left: 2 px;
+    padding-bottom: 2 px;
+    padding-right: 2 px;
+}
+
+font.preproc, font.keyword              { color: #0000ff;}
+font.nortext, font.numbers, font.strings{ color: #000000;}
+font.comment                            { color: #008000;}
+

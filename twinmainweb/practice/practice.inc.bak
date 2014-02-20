@@ -1,0 +1,255 @@
+<%
+
+Dim g_RankingSelectorID
+Dim g_bBegEndTimeScriptAdded
+Dim g_bLastBegTime
+
+
+' this must be paired with a call to WriteEndTimeField to make everything work together
+' ID is just some ID - doesnt matter what it is; its used to name things so you can have multiple Beg/End inputs on the same form or page
+Sub WriteBegTimeField(ID, FormName, BegName, EndName, InitialVal)
+    g_bLastBegTime = InitialVal
+    If g_bBegEndTimeScriptAdded <> True Then
+        %>
+        <SCRIPT language=VBScript>
+        <!--
+    
+        <% ' calculate beginning time from (end time + minutes).  Also updates the length thingy %>
+        Sub CalcBegTime(beg, cend, minutes, cspan)
+            if isdate(cend.value) then
+                beg.value = CStr(DateAdd("n", minutes, cend.value))
+                UpdateBegEndSpan beg, cend, cspan
+            else
+                beg.value = "invalid"
+            end if
+        End Sub
+
+        Sub UpdateBegEndSpan(beg, cend, cspan)
+            if isdate(cend.value) and isdate(beg.value) then
+                Dim mins
+                mins = DateDiff("n", beg.value, cend.value)
+                if mins >= 60 then
+                    cspan.value = CStr(Round(mins / 60, 2)) & " hours"
+                else
+                    cspan.value = CStr(mins) & " minutes"
+                end if
+            else
+                cspan.value = "invalid"
+            end if
+        End Sub
+        //-->
+        </SCRIPT>
+        <%
+        g_bBegEndTimeScriptAdded = True
+    End If
+    %>
+    <input type=edit name=<%=BegName%> onchange="UpdateBegEndSpan(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.CS_EndTime, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="<%=InitialVal%>">
+        (end time minus
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -15, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="15min">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -30, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="30min">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -45, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="45min">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -60, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="1h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -75, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="1.25h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -90, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="1.5h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -120, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="2h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -150, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="2.5h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -180, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="3h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -240, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="4h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -300, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="5h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -360, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="6h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -420, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="7h">
+        <input type=button onclick="CalcBegTime(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, -480, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);" value="8h">
+        )
+    <%
+End Sub
+Sub WriteEndTimeField(ID, FormName, BegName, EndName, InitialVal)
+    %>
+    <input
+        type=edit
+        onchange="UpdateBegEndSpan(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);"
+        name=<%=EndName%>
+        value="<%=InitialVal%>">
+    (length: <input type=edit readonly name=BegEndTimeSpan<%=ID%>
+    value="<%
+        if isdate(InitialVal) and isdate(g_bLastBegTime) then
+            Dim mins
+            mins = DateDiff("n", g_bLastBegTime, InitialVal)
+            if mins >= 60 then
+                Response.Write CStr(Round(mins / 60, 2)) & " hours"
+            else
+                Response.Write CStr(mins) & " minutes"
+            end if
+        else
+            Response.Write "invalid"
+        end if
+    %>" >)
+    <input
+        type=button
+        value="Now"
+        onclick="document.<%=FormName%>.<%=EndName%>.value = '<%=Now()%>';UpdateBegEndSpan(document.<%=FormName%>.<%=BegName%>, document.<%=FormName%>.<%=EndName%>, document.<%=FormName%>.BegEndTimeSpan<%=ID%>);">
+    <%
+End Sub
+
+
+Sub WriteRankingSelector(formname, valuename, selectedranking)
+    Dim rst
+    Dim selection
+    if IsEmpty(selectedranking) or IsNull(selectedranking) then
+        selectedranking = 50
+    end if
+    %>
+
+    <SCRIPT language=JavaScript>
+    <!--
+    function DoOnRankingSelectorChange<%=g_RankingSelectorID%>(f)
+    {
+        document.<%=formname%>.<%=valuename%>.value = document.<%=formname%>.<%=valuename%>NotForActualUse<%=g_RankingSelectorID%>.value;
+    }
+    //-->
+    </SCRIPT>
+    <select onchange="DoOnRankingSelectorChange<%=g_RankingSelectorID%>();" name="<%=valuename%>NotForActualUse<%=g_RankingSelectorID%>"><%
+    Set rst = PerformSelect("SELECT Name, Low, High, DefaultVal from tRankings order by DefaultVal")
+    While Not rst.EOF
+        selection = ""
+        if not IsEmpty(selectedranking) and not IsNull(selectedranking) and (selectedranking <= rst("High") and selectedranking >= rst("Low")) then
+            selection = " selected "
+        end if
+        %><option <%=selection%>value=<%=rst("DefaultVal")%>><%=dbf(rst("Name")) & "&nbsp;(" & dbf(rst("Low")) & "-" & dbf(rst("High")) & ")"%></option><%
+        rst.MoveNext
+    Wend
+    %></select>
+    <input type=edit name="<%=valuename%>" value="<%=selectedranking%>">
+    <%
+    rst.Close
+    Set rst = Nothing
+    g_RankingSelectorID = g_RankingSelectorID + 1
+End Sub
+
+Sub WriteBookSelector(valuename, selectedID)
+    Dim rst
+    Dim selection
+    %><select name="<%=valuename%>"><%
+    Set rst = PerformSelect("SELECT ID, Title + ' (' + Author + ')' Title from tBooks order by Title")
+    While Not rst.EOF
+        selection = ""
+        if not IsEmpty(selectedID) and not IsNull(selectedID) and selectedID = rst("ID") then
+            ' we have the selected one. mark it such
+            selection = " selected "
+        end if
+        %><option <%=selection%>value=<%=rst("ID")%>><%=dbf(rst("Title"))%></option><%
+        rst.MoveNext
+    Wend
+    %></select><%
+    rst.Close
+    Set rst = Nothing
+End Sub
+
+
+Sub WriteMusicianSelector2(valuename, selectedID)
+    %>aoenuthaoentuhaoenuth<%
+End Sub
+
+
+Sub WriteMusicianSelector(valuename, selectedID)
+    Dim rst
+    Dim selection
+    %><select name="<%=valuename%>"><%
+    Set rst = PerformSelect("SELECT ID, Name from tMusicians order by Name")
+    While Not rst.EOF
+        selection = ""
+        if not IsEmpty(selectedID) and not IsNull(selectedID) and selectedID = rst("ID") then
+            ' we have the selected one. mark it such
+            selection = " selected "
+        end if
+        %><option <%=selection%>value=<%=rst("ID")%>><%=dbf(rst("Name"))%></option><%
+        rst.MoveNext
+    Wend
+    %></select><%
+    rst.Close
+    Set rst = Nothing
+End Sub
+
+
+Sub WriteSkillSelector(valuename, selectedID)
+    Dim rst
+    Dim selection
+    %><select name="<%=valuename%>"><%
+    Set rst = PerformSelect("SELECT * from dbo.fn_GetSkillTree(Null, '&nbsp;&nbsp;') order by SortID")
+    While Not rst.EOF
+        selection = ""
+        if not IsEmpty(selectedID) and not IsNull(selectedID) and selectedID = rst("ID") then
+            ' we have the selected one. mark it such
+            selection = " selected "
+        end if
+        %><option <%=selection%>value=<%=rst("ID")%>>
+        <%=rst("IndentString") & dbf(rst("Name"))%></option><%
+        rst.MoveNext
+    Wend
+    %></select><%
+    rst.Close
+    Set rst = Nothing
+End Sub
+
+Sub WriteLessonSelector(valuename, selectedID)
+    Dim rst
+    Dim selection
+    %><select name="<%=valuename%>"><%
+    Set rst = PerformSelect("SELECT * from dbo.fn_GetLessonTree(Null, '&nbsp;&nbsp;') order by SortID")
+    While Not rst.EOF
+        selection = ""
+        if not IsEmpty(selectedID) and not IsNull(selectedID) and selectedID = rst("ID") then
+            ' we have the selected one. mark it such
+            selection = " selected "
+        end if
+        %><option <%=selection%>value=<%=rst("ID")%>>
+        <%=rst("IndentString") & dbf(rst("Name"))%></option><%
+        rst.MoveNext
+    Wend
+    %></select><%
+    rst.Close
+    Set rst = Nothing
+End Sub
+
+Sub WriteInstrumentSelector(valuename, selectedID)
+    Dim rst
+    Dim selection
+    %><select name="<%=valuename%>"><%
+    Set rst = PerformSelect("SELECT * from dbo.fn_GetInstrumentTree(Null, '&nbsp;&nbsp;') order by SortID")
+    While Not rst.EOF
+        selection = ""
+        if not IsEmpty(selectedID) and not IsNull(selectedID) and selectedID = rst("ID") then
+            ' we have the selected one. mark it such
+            selection = " selected "
+        end if
+        %><option <%=selection%>value=<%=rst("ID")%>>
+        <%=rst("IndentString") & dbf(rst("Name"))%></option><%
+        rst.MoveNext
+    Wend
+    %></select><%
+    rst.Close
+    Set rst = Nothing
+End Sub
+
+Function SkillCircularReferenceCheck(ID, ProposedParentID)
+    SkillCircularReferenceCheck = False
+    If 0 < GetFirstValueOfQuery("select count(*) from dbo.fn_GetSkillTree(" & ID & ", '') where ID = " & ProposedParentID) Then
+        SkillCircularReferenceCheck = True
+    End If
+End Function
+
+Function LessonCircularReferenceCheck(ID, ProposedParentID)
+    LessonCircularReferenceCheck = False
+    If 0 < GetFirstValueOfQuery("select count(*) from dbo.fn_GetLessonTree(" & ID & ", '') where ID = " & ProposedParentID) Then
+        LessonCircularReferenceCheck = True
+    End If
+End Function
+
+Function InstrumentCircularReferenceCheck(ID, ProposedParentID)
+    InstrumentCircularReferenceCheck = False
+    If 0 < GetFirstValueOfQuery("select count(*) from dbo.fn_GetInstrumentTree(" & ID & ", '') where ID = " & ProposedParentID) Then
+        InstrumentCircularReferenceCheck = True
+    End If
+End Function
+
+
+%>

@@ -1,0 +1,45 @@
+<SCRIPT LANGUAGE=VBScript RUNAT=Server>
+
+
+Sub Application_OnStart
+    Application("Initialized") = False
+    Application("nSessions") = 0
+End Sub
+
+
+Sub Application_OnEnd
+    If Application("Initialized") = True Then
+        If Not (Application("cnn") Is Nothing) Then
+            Application("cnn").Close
+            Set Application("cnn") = Nothing
+        End If
+    End If
+End Sub
+
+
+Sub Session_OnStart
+    Application("nSessions") = Application("nSessions") + 1
+    Set Session("fso") = Server.CreateObject("Scripting.FileSystemObject")
+    If Application("Initialized") = False Then
+        Application("Initialized") = True
+
+        Dim fso
+        Set fso = Session("fso")
+
+        Set Application("cnn") = Server.CreateObject("ADODB.Connection")
+        Application("cnn").Open "Provider=sqloledb;Data Source=mintzer;User Id=Practice;Password=Practice" 
+    End If
+
+    Dim tl
+    Set tl = Server.CreateObject("Scriptlet.TypeLib")
+    Session("SessionID") = tl.Guid
+    Set tl = Nothing
+
+End Sub
+
+
+Sub Session_OnEnd
+    Application("nSessions") = Application("nSessions") - 1
+End Sub
+
+</SCRIPT>

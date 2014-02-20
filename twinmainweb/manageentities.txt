@@ -1,0 +1,148 @@
+<!-- #include File = "global.asp"-->
+<%
+'   QUERYSTRINGS: q = the user to search for
+'                 p = the passcode
+'               : a = the alias id
+'
+'   FORMS       : none
+
+'On Error Resume Next
+
+
+WriteHeader "_tWinMain Web"
+
+%>
+Q: What is an "entity"?
+Q: What is a "user"?
+
+1) First display a list of how things are now.
+
+    Search for entities
+    
+    [ help ]
+
+    *TENF*
+    
+    Check similar entities to link them
+
+    X [ split ] tenfour
+                    tenfour!carl@ript.net
+                    tenfour!DrDrew@evrtwa1.verizon-dsl.net
+    X [ split ] tenfear
+                    tenfear!DrDrew@evrtwa1.verizon-dsl.net
+    X [ split ] tenphool
+                    tenphool!DrDrew@evrtwa1.verizon-dsl.net
+                    CrankHank!cranker@scubagear.com
+      [ split ] theForger
+                    theForger!brook@ript.net
+    [ submit ]
+
+
+2) Confirmation:
+
+    Select the primary group (the one that you want to see)
+    *        tenfour
+                    tenfour!carl@ript.net
+                    tenfour!DrDrew@evrtwa1.verizon-dsl.net
+             tenfear
+                    tenfear!DrDrew@evrtwa1.verizon-dsl.net
+             tenphool
+                    tenphool!DrDrew@evrtwa1.verizon-dsl.net
+                    CrankHank!cranker@scubagear.com
+    [ cancel ]
+    [ make the changes ]
+
+3) Update successful.
+
+    Search for entities
+
+    *TENF*
+    
+    Check similar entities to link them
+
+    X [ split ] tenfour
+                    tenfour!carl@ript.net
+                    tenfour!DrDrew@evrtwa1.verizon-dsl.net
+                    tenfear!DrDrew@evrtwa1.verizon-dsl.net
+                    tenphool!DrDrew@evrtwa1.verizon-dsl.net
+                    CrankHank!cranker@scubagear.com
+      [ split ] theForger
+                    theForger!brook@ript.net
+    [ submit ]
+    
+    
+4) Let's do a Split
+
+    Split up tenfour
+    Select the users that should not be part of this entity
+     X  CrankHank!cranker@scubagear.com
+        tenfour!carl@ript.net
+        tenfour!DrDrew@evrtwa1.verizon-dsl.net
+        tenfear!DrDrew@evrtwa1.verizon-dsl.net
+        tenphool!DrDrew@evrtwa1.verizon-dsl.net
+
+    Choose the entity to assign these hosts:
+    [ ]    tenfour
+    [ ]    tenfear
+    [ ]    tenphool
+    [ ]    theForger
+    [ ]    [ new entity ]___CrankHank_______
+    
+    [ NEXT -> ]
+
+5) Confirmation
+
+    Confirm that you are moving:
+        CrankHank!cranker@scubagear.com
+    To the entity
+        CrankHank
+
+    [ NEXT -> ]
+    
+6) Successful!
+
+    Search for entities
+
+    *TENF*
+    
+    Check similar entities to link them
+
+      [ split ] CrankHank
+                    CrankHank!cranker@scubagear.com
+      [ split ] tenfour
+                    tenfour!carl@ript.net
+                    tenfour!DrDrew@evrtwa1.verizon-dsl.net
+                    tenfear!DrDrew@evrtwa1.verizon-dsl.net
+                    tenphool!DrDrew@evrtwa1.verizon-dsl.net
+      [ split ] theForger
+                    theForger!brook@ript.net
+    [ submit ]
+
+<%
+
+WriteFooter
+%>
+
+
+
+
+
+<!--' since we have a bunch of form data passed from entitysplit_chooseentity.asp,
+' we need to forward those users to this page again when the user submits a new search ... thus there is a need to 
+' re-create all the relevant form data.
+'
+' You might be asking yourself, "well why not build the CSV list like we do below and just pass that?""
+' well, since this page is also a search page and may be "called" many times, we need to keep the data
+' in the exact same format all the time.
+' We will construct the CSV string and pass that on to th eNEXT page though.
+'Sub ForwardUserList()
+'    Dim item
+'    For Each item In Request.Form
+'        If Len(item) > 4 Then
+'            If Left(item, 5) = "user_" Then
+'                %><input type=hidden name="<%=HTMLEncode(item)%>" value="<%=HTMLEncode(Request.Form(item))%>" ID="Hidden1"><%
+'            End If
+'        End If
+'    Next
+'End Sub
+-->

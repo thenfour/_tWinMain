@@ -1,0 +1,44 @@
+<Script Language="vbscript" Runat="server">
+
+Sub Application_OnStart()
+End Sub
+
+
+Sub Application_OnEnd()
+    Set Application("cnn") = Nothing
+End Sub
+
+   
+Sub Session_OnStart()
+    Session("Authenticated") = False
+    Set Session("fso") = Server.CreateObject("Scripting.FileSystemObject")
+
+    If (Not (Application("ApplicationInitialized") = True)) Then
+        Application("ApplicationInitialized") = True
+
+        Dim sThisPath, PathInfo, fso
+
+        sThisPath = Request.ServerVariables("APPL_PHYSICAL_PATH")
+        
+        ' Open the database
+        Set Application("cnn") = Server.CreateObject("ADODB.Connection")
+        Set fso = Session("fso")
+
+        Application("Root") = sThisPath
+        Application("StyleSheet") = fso.BuildPath(sThisPath, "style\main.css")
+        Application("LogoURL") = fso.BuildPath(sThisPath, "style\logo.gif")
+
+        Application("cnn").Open "Provider=SQLOLEDB.1;Password=Am7-5b913;Persist Security Info=True;User ID=twinmainweb;Initial Catalog=winprog;Data Source=wayne"
+        Application("cnnErrDescription") = err.Description
+        Application("cnnErrNumber") = err.number
+
+        Set fso = Nothing
+    End If
+    
+End Sub
+
+Sub Session_OnEnd()
+    Set Session("fso") = Nothing
+End Sub
+
+</Script>
